@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+ 
+}
+
+model Note {
+  id        Int      @id @default(autoincrement())
+  userKey   String
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  noteTags      NoteTag[]
+  outgoingLinks NoteLink[] @relation("FromLinks")
+  incomingLinks NoteLink[] @relation("ToLinks")
+
+  @@index([userKey])
+  @@index([userKey, updatedAt])
+  @@index([userKey, createdAt])
+}
+
+model Tag {
+  id        Int      @id @default(autoincrement())
+  userKey   String
+  name      String
+  createdAt DateTime @default(now())
+
+  // Relations
+  noteTags NoteTag[]
+
+  @@index([userKey])
+  @@unique([userKey, name])
+}
+
+model NoteTag {
+  userKey String
+  noteId  Int
+  tagId   Int
+
+  // Relations
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([userKey, noteId, tagId])
+  @@index([userKey])
+  @@index([noteId])
+  @@index([tagId])
+}
+
+model NoteLink {
+  userKey     String
+  fromNoteId  Int
+  toNoteId    Int
+  createdAt   DateTime @default(now())
+
+  // Relations (two relations to Note, must be named)
+  fromNote Note @relation("FromLinks", fields: [fromNoteId], references: [id], onDelete: Cascade)
+  toNote   Note @relation("ToLinks",   fields: [toNoteId],   references: [id], onDelete: Cascade)
+
+  @@id([userKey, fromNoteId, toNoteId])
+  @@index([userKey])
+  @@index([fromNoteId])
+  @@index([toNoteId])
+}
