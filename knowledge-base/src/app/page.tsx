@@ -10,12 +10,7 @@ import { apiFetch } from "@/lib/apiFetch";
 
 
 export default function Home() {
- useEffect(() => {
-  console.log("Home mounted, calling apiFetch");
-  apiFetch("/api/notes")
-    .then((r) => r.json())
-    .then(console.log);
-}, []);
+
 
 
   return (
