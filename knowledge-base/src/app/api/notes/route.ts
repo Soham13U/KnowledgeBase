@@ -3,6 +3,7 @@ import { requireUserKey } from "@/lib/server/requireUserKey";
 import { listNotes, createNote } from "@/lib/services/notes";
 import { z } from "zod";
 
+
 const createNoteSchema = z.object({
   title: z.string().min(1),
   content: z.string().optional(),
@@ -14,21 +15,23 @@ const createNoteSchema = z.object({
 export async function GET(req: Request) {
   try {
     const userKey = requireUserKey(req);
-    const {searchParams} = new URL(req.url);
-    const rawQuery = searchParams.get("query");
-    const query = rawQuery?.trim()? rawQuery.trim(): undefined;
 
-    const notes = await listNotes(userKey,{query});
+    const { searchParams } = new URL(req.url);
+    const query = searchParams.get("query") ?? undefined;
+
+    const tagIdRaw = searchParams.get("tagId");
+    const tagId = tagIdRaw ? Number(tagIdRaw) : undefined;
+
+    const notes = await listNotes(userKey, {
+      query,
+      tagId: Number.isInteger(tagId) ? tagId : undefined,
+    });
 
     return NextResponse.json(notes);
   } catch {
-    return NextResponse.json(
-      { error: "Missing x-user-key" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Missing x-user-key" }, { status: 400 });
   }
 }
-
 
 export async function POST(req: Request) {
   try {
@@ -48,11 +51,13 @@ export async function POST(req: Request) {
       if (err instanceof Error && err.message.includes("Invalid tagIds")) {
         return NextResponse.json({ error: "Invalid tagIds" }, { status: 400 });
       }
-      throw err;
+      // unknown service/db failure
+      return NextResponse.json({ error: "Server error" }, { status: 500 });
     }
   } catch (err) {
-    // Missing user key is the most common "expected" failure here
+    // requireUserKey throws => missing header
     return NextResponse.json({ error: "Missing x-user-key" }, { status: 400 });
   }
 }
+
 

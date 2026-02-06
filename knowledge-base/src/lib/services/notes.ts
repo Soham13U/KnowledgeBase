@@ -58,39 +58,73 @@ export async function createNote(userKey: string, data: CreateNoteInput) {
   });
 }
 
-export async function listNotes(userKey: string, opts?: { query?: string }) {
-  const query = opts?.query?.trim();
+export async function listNotes(
+  userKey: string,
+  opts?: { query?: string; tagId?: number }
+) {
+  const q = opts?.query?.trim();
+  const tagId = opts?.tagId;
 
   return prisma.note.findMany({
     where: {
       userKey,
-      ...(query
+      ...(q
         ? {
             OR: [
-              { title: { contains: query, mode: "insensitive" } },
-              { content: { contains: query, mode: "insensitive" } },
+              { title: { contains: q, mode: "insensitive" } },
+              { content: { contains: q, mode: "insensitive" } },
             ],
+          }
+        : {}),
+      ...(tagId
+        ? {
+            noteTags: {
+              some: {
+                userKey,
+                tagId,
+              },
+            },
           }
         : {}),
     },
     orderBy: { updatedAt: "desc" },
     include: {
       noteTags: {
-        include: {
-          tag: true,
-        },
+        include: { tag: true },
       },
     },
   });
 }
 
 
-export async function getNoteById(userKey: string, id: number)
-{
-    return prisma.note.findFirst({
-        where:{userKey,id},
-    });
+
+export async function getNoteById(userKey: string, id: number) {
+  return prisma.note.findFirst({
+    where: { userKey, id },
+    include: {
+      noteTags: {
+        include: {
+          tag: true,
+        },
+      },
+      outgoingLinks: {
+        include: {
+          toNote: {
+            select: { id: true, title: true, updatedAt: true },
+          },
+        },
+      },
+      incomingLinks: {
+        include: {
+          fromNote: {
+            select: { id: true, title: true, updatedAt: true },
+          },
+        },
+      },
+    },
+  });
 }
+
 
 export async function updateNoteById(
   userKey: string,
