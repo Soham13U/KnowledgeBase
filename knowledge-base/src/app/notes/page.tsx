@@ -25,8 +25,12 @@ type Note = {
   title: string;
   content: string;
   updatedAt: string;
-  // if you included tags in listNotes earlier, you may also have:
-  // noteTags?: Array<{ tag: Tag }>;
+  noteTags: Array<{
+    tag: {
+      id: number;
+      name: string;
+    };
+  }>;
 };
 
 export default function NotesPage() {
@@ -174,7 +178,21 @@ export default function NotesPage() {
                   {n.content}
                 </div>
               ) : null}
+              {n.noteTags.length > 0 ? (
+  <div className="mt-3 flex flex-wrap gap-2">
+    {n.noteTags.map((nt) => (
+      <span
+        key={nt.tag.id}
+        className="rounded-full border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-xs text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300"
+      >
+        {nt.tag.name}
+      </span>
+    ))}
+  </div>
+) : null}
+
             </Link>
+            
           ))}
 
           {!loading && !error && notes.length === 0 && (

@@ -9,7 +9,7 @@ export async function GET(
   try {
     const userKey = requireUserKey(req);
 
-    const { id: idStr } = await params; 
+    const { id: idStr } = await params; // <-- MUST await
     const id = Number(idStr);
 
     if (!Number.isInteger(id)) {
