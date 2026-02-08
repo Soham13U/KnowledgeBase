@@ -128,19 +128,16 @@ export async function getNoteById(userKey: string, id: number) {
 
 export async function updateNoteById(
   userKey: string,
-  id: number,
+  noteId: number,
   data: UpdateNoteInput
 ) {
-  const tagIdsProvided = Array.isArray(data.tagIds);
-  const tagIds = data.tagIds?.length ? data.tagIds : [];
+  const tagIds =
+    data.tagIds && data.tagIds.length
+      ? Array.from(new Set(data.tagIds))
+      : [];
 
-  // Build patch (only set provided fields)
-  const patch: { title?: string; content?: string } = {};
-  if (typeof data.title === "string") patch.title = data.title;
-  if (typeof data.content === "string") patch.content = data.content;
-
-  // If tagIds is provided, verify ownership
-  if (tagIdsProvided && tagIds.length > 0) {
+  // If tagIds provided, validate ownership
+  if (data.tagIds) {
     const tags = await prisma.tag.findMany({
       where: { userKey, id: { in: tagIds } },
       select: { id: true },
@@ -151,32 +148,29 @@ export async function updateNoteById(
     }
   }
 
-  // Transaction: update note + replace tags (if tagIds provided)
   return prisma.$transaction(async (tx) => {
-    // Update note (scoped)
-    if (Object.keys(patch).length > 0) {
-      const res = await tx.note.updateMany({
-        where: { userKey, id },
-        data: patch,
-      });
-      if (res.count === 0) return null;
-    } else {
-      // even if no patch fields, ensure note exists & is owned before editing tags
-      const exists = await tx.note.findFirst({ where: { userKey, id }, select: { id: true } });
-      if (!exists) return null;
-    }
+    // Update note (scoped by userKey)
+    const updated = await tx.note.updateMany({
+      where: { id: noteId, userKey },
+      data: {
+        ...(data.title !== undefined ? { title: data.title } : {}),
+        ...(data.content !== undefined ? { content: data.content } : {}),
+      },
+    });
 
-    // Replace tags only if tagIds was provided (meaning caller intends to set them)
-    if (tagIdsProvided) {
+    if (updated.count === 0) return null;
+
+    // If tagIds was provided, replace join rows
+    if (data.tagIds) {
       await tx.noteTag.deleteMany({
-        where: { userKey, noteId: id },
+        where: { userKey, noteId },
       });
 
       if (tagIds.length > 0) {
         await tx.noteTag.createMany({
           data: tagIds.map((tagId) => ({
             userKey,
-            noteId: id,
+            noteId,
             tagId,
           })),
           skipDuplicates: true,
@@ -184,12 +178,13 @@ export async function updateNoteById(
       }
     }
 
-    // Return updated note (optionally include tags)
+    // Return fresh detail shape (same as your GET /api/notes/[id])
     return tx.note.findFirst({
-      where: { userKey, id },
+      where: { id: noteId, userKey },
       include: {
-        noteTags: { include: { tag: true } }, // if you use Variant 1
-        // tags: true, // if you use Variant 2
+        noteTags: { include: { tag: true } },
+        outgoingLinks: { include: { toNote: { select: { id: true, title: true } } } },
+        incomingLinks: { include: { fromNote: { select: { id: true, title: true } } } },
       },
     });
   });

@@ -7,6 +7,10 @@ import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import { EditNoteDialog } from "@/components/notes/EditNoteDialog";
 import type { Tag } from "@/components/notes/TagMultiSelect";
+import { DeleteNoteButton } from "@/components/notes/DeleteNoteButton";
+import { LinkNoteDialog } from "@/components/notes/LinkNoteDialog";
+
+
 
 type NoteDetail = {
   id: number;
@@ -78,10 +82,19 @@ export default function NoteDetailPage() {
           <Link href="/notes">
             <Button variant="outline">Back</Button>
           </Link>
-
           {note && (
-            <EditNoteDialog note={note} allTags={allTags} onSaved={reload} />
-          )}
+  <LinkNoteDialog
+    fromNoteId={note.id}
+    existingToIds={note.outgoingLinks.map((l) => l.toNote.id)}
+    onLinked={reload}
+  />
+)}
+
+
+          <div className="flex items-center gap-2">
+  {note && <EditNoteDialog note={note} allTags={allTags} onSaved={reload} />}
+  {note && <DeleteNoteButton noteId={note.id} />}
+</div>
         </div>
 
         {loading && <div className="text-zinc-500">Loading…</div>}
