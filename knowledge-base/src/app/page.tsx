@@ -1,22 +1,34 @@
-'use client';
+"use client";
 
-import Image from "next/image";
+import Link from "next/link";
+import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/mode-toggle";
-import { useEffect } from "react";
-import { apiFetch } from "@/lib/apiFetch";
-
-
-
 
 export default function Home() {
-
-
-
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <ModeToggle/>
-      <Button variant="outline">Button</Button>
+    <div className="min-h-screen bg-zinc-50 dark:bg-black">
+      <Navbar />
+
+      <main className="mx-auto max-w-5xl px-6 py-12">
+        <div className="space-y-3">
+          <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+            Knowledge Base
+          </h1>
+          <p className="max-w-xl text-sm text-zinc-600 dark:text-zinc-400">
+            Create notes, tag them, and link them. Backlinks help you build
+            a Zettelkasten-lite system.
+          </p>
+        </div>
+
+        <div className="mt-8 flex gap-3">
+          <Link href="/notes">
+            <Button>Open Notes</Button>
+          </Link>
+          <Link href="/insights">
+            <Button variant="outline">View Insights</Button>
+          </Link>
+        </div>
+      </main>
     </div>
   );
 }

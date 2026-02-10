@@ -1,5 +1,7 @@
 "use client";
 import { NewNoteDialog } from "@/components/notes/NewNoteDialog";
+import { Navbar } from "@/components/Navbar";
+
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -123,12 +125,11 @@ export default function NotesPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 p-6 text-zinc-900 dark:bg-black dark:text-zinc-50">
+       <Navbar />
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Notes</h1>
-          <Link href="/">
-            <Button variant="outline">Home</Button>
-          </Link>
+          
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">

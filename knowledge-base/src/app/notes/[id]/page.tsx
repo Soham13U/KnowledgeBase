@@ -9,6 +9,8 @@ import { EditNoteDialog } from "@/components/notes/EditNoteDialog";
 import type { Tag } from "@/components/notes/TagMultiSelect";
 import { DeleteNoteButton } from "@/components/notes/DeleteNoteButton";
 import { LinkNoteDialog } from "@/components/notes/LinkNoteDialog";
+import { Navbar } from "@/components/Navbar";
+
 
 
 
@@ -77,6 +79,7 @@ export default function NoteDetailPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 p-6 dark:bg-black">
+      <Navbar/>
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="flex items-center justify-between">
           <Link href="/notes">
