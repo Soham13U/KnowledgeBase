@@ -20,8 +20,8 @@ function NavLink({
       className={[
         "text-sm transition-colors",
         active
-          ? "text-zinc-900 dark:text-zinc-50"
-          : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50",
+          ? "text-foreground"
+          : "text-muted-foreground hover:text-foreground",
       ].join(" ")}
     >
       {label}
@@ -31,11 +31,11 @@ function NavLink({
 
 export function Navbar() {
   return (
-    <header className="border-b border-zinc-200 bg-white/70 backdrop-blur dark:border-zinc-800 dark:bg-black/40">
+    <header className="border-b border-border bg-background/80 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
         <Link
           href="/"
-          className="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-50"
+          className="text-sm font-semibold tracking-tight text-foreground"
         >
           Knowledge Base
         </Link>

@@ -6,15 +6,15 @@ import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-black">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
 
       <main className="mx-auto max-w-5xl px-6 py-12">
         <div className="space-y-3">
-          <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
             Knowledge Base
           </h1>
-          <p className="max-w-xl text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="max-w-xl text-sm text-muted-foreground">
             Create notes, tag them, and link them. Backlinks help you build
             a Zettelkasten-lite system.
           </p>

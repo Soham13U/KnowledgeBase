@@ -78,98 +78,117 @@ export default function NoteDetailPage() {
   }, [id]);
 
   return (
-    <div className="min-h-screen bg-zinc-50 p-6 dark:bg-black">
-      <Navbar/>
-      <div className="mx-auto max-w-3xl space-y-6">
-        <div className="flex items-center justify-between">
-          <Link href="/notes">
-            <Button variant="outline">Back</Button>
-          </Link>
+  <div className="min-h-screen bg-background text-foreground">
+    <Navbar />
+
+    <div className="mx-auto max-w-3xl space-y-6 px-6 py-8">
+      <div className="flex items-center justify-between">
+        <Link href="/notes">
+          <Button variant="outline">Back</Button>
+        </Link>
+
+        {note && (
+          <LinkNoteDialog
+            fromNoteId={note.id}
+            existingToIds={note.outgoingLinks.map((l) => l.toNote.id)}
+            onLinked={reload}
+          />
+        )}
+
+        <div className="flex items-center gap-2">
           {note && (
-  <LinkNoteDialog
-    fromNoteId={note.id}
-    existingToIds={note.outgoingLinks.map((l) => l.toNote.id)}
-    onLinked={reload}
-  />
-)}
-
-
-          <div className="flex items-center gap-2">
-  {note && <EditNoteDialog note={note} allTags={allTags} onSaved={reload} />}
-  {note && <DeleteNoteButton noteId={note.id} />}
-</div>
+            <EditNoteDialog
+              note={note}
+              allTags={allTags}
+              onSaved={reload}
+            />
+          )}
+          {note && <DeleteNoteButton noteId={note.id} />}
         </div>
+      </div>
 
-        {loading && <div className="text-zinc-500">Loading…</div>}
-        {!loading && error && <div className="text-red-500">{error}</div>}
+      {loading && (
+        <div className="text-sm text-muted-foreground">Loading…</div>
+      )}
 
-        {!loading && !error && note && (
-          <div className="space-y-4 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
-            <div className="text-xl font-semibold">{note.title}</div>
+      {!loading && error && (
+        <div className="text-sm text-destructive">{error}</div>
+      )}
 
-            <div className="whitespace-pre-wrap text-sm text-zinc-700 dark:text-zinc-300">
-              {note.content}
+      {!loading && !error && note && (
+        <div className="space-y-4 rounded-lg border border-border bg-card p-4">
+          <div className="text-xl font-semibold">{note.title}</div>
+
+          <div className="whitespace-pre-wrap text-sm text-muted-foreground">
+            {note.content}
+          </div>
+
+          {note.noteTags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {note.noteTags.map((nt) => (
+                <span
+                  key={nt.tag.id}
+                  className="rounded-full border border-border bg-muted px-2 py-0.5 text-xs text-foreground"
+                >
+                  {nt.tag.name}
+                </span>
+              ))}
             </div>
+          )}
 
-            {note.noteTags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {note.noteTags.map((nt) => (
-                  <span
-                    key={nt.tag.id}
-                    className="rounded-full border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-xs text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300"
-                  >
-                    {nt.tag.name}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <div className="mb-2 text-sm font-medium">Outbound links</div>
-                <div className="space-y-2 text-sm">
-                  {note.outgoingLinks.length === 0 ? (
-                    <div className="text-zinc-500">None</div>
-                  ) : (
-                    note.outgoingLinks.map((l) => (
-                      <Link
-                        key={l.toNote.id}
-                        href={`/notes/${l.toNote.id}`}
-                        className="block underline"
-                      >
-                        {l.toNote.title}
-                      </Link>
-                    ))
-                  )}
-                </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <div className="mb-2 text-sm font-medium">
+                Outbound links
               </div>
 
-              <div>
-                <div className="mb-2 text-sm font-medium">Backlinks</div>
-                <div className="space-y-2 text-sm">
-                  {note.incomingLinks.length === 0 ? (
-                    <div className="text-zinc-500">None</div>
-                  ) : (
-                    note.incomingLinks.map((l) => (
-                      <Link
-                        key={l.fromNote.id}
-                        href={`/notes/${l.fromNote.id}`}
-                        className="block underline"
-                      >
-                        {l.fromNote.title}
-                      </Link>
-                    ))
-                  )}
-                </div>
+              <div className="space-y-2 text-sm">
+                {note.outgoingLinks.length === 0 ? (
+                  <div className="text-muted-foreground">None</div>
+                ) : (
+                  note.outgoingLinks.map((l) => (
+                    <Link
+                      key={l.toNote.id}
+                      href={`/notes/${l.toNote.id}`}
+                      className="block text-primary hover:underline"
+                    >
+                      {l.toNote.title}
+                    </Link>
+                  ))
+                )}
               </div>
             </div>
 
-            <div className="text-xs text-zinc-500">
-              Updated: {new Date(note.updatedAt).toLocaleString()}
+            <div>
+              <div className="mb-2 text-sm font-medium">
+                Backlinks
+              </div>
+
+              <div className="space-y-2 text-sm">
+                {note.incomingLinks.length === 0 ? (
+                  <div className="text-muted-foreground">None</div>
+                ) : (
+                  note.incomingLinks.map((l) => (
+                    <Link
+                      key={l.fromNote.id}
+                      href={`/notes/${l.fromNote.id}`}
+                      className="block text-primary hover:underline"
+                    >
+                      {l.fromNote.title}
+                    </Link>
+                  ))
+                )}
+              </div>
             </div>
           </div>
-        )}
-      </div>
+
+          <div className="text-xs text-muted-foreground">
+            Updated: {new Date(note.updatedAt).toLocaleString()}
+          </div>
+        </div>
+      )}
     </div>
-  );
+  </div>
+);
+
 }

@@ -108,54 +108,85 @@ export function LinkNoteDialog({ fromNoteId, existingToIds, onLinked }: Props) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline">Link note</Button>
-      </DialogTrigger>
+  <Dialog open={open} onOpenChange={setOpen}>
+    <DialogTrigger asChild>
+      <Button variant="outline">Link note</Button>
+    </DialogTrigger>
 
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>Link this note to…</DialogTitle>
-        </DialogHeader>
+    <DialogContent className="sm:max-w-lg bg-card border-border">
+      <DialogHeader>
+        <DialogTitle>Link this note to…</DialogTitle>
+      </DialogHeader>
 
-        <div className="space-y-3">
-          <Input
-            value={q}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setQ(e.target.value)
-            }
-            placeholder="Search notes by title…"
-            disabled={linking}
-          />
+      <div className="space-y-3">
+        <Input
+          value={q}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setQ(e.target.value)
+          }
+          placeholder="Search notes by title…"
+          disabled={linking}
+        />
 
-          {loading && <div className="text-sm text-zinc-500">Searching…</div>}
-          {error && <div className="text-sm text-red-500">{error}</div>}
+        {loading && (
+          <div className="text-sm text-muted-foreground">
+            Searching…
+          </div>
+        )}
 
-          {!loading && !error && q.trim().length > 0 && results.length === 0 && (
-            <div className="text-sm text-zinc-500">No results.</div>
+        {error && (
+          <div className="text-sm text-destructive">
+            {error}
+          </div>
+        )}
+
+        {!loading &&
+          !error &&
+          q.trim().length > 0 &&
+          results.length === 0 && (
+            <div className="text-sm text-muted-foreground">
+              No results.
+            </div>
           )}
 
-          <div className="max-h-64 space-y-2 overflow-auto">
-            {results.map((n) => (
-              <button
-                key={n.id}
-                type="button"
-                onClick={() => createLink(n.id)}
-                disabled={linking}
-                className="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-left text-sm hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
-              >
-                {n.title}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex justify-end">
-            <Button variant="outline" onClick={() => setOpen(false)} disabled={linking}>
-              Close
-            </Button>
-          </div>
+        <div className="max-h-64 space-y-2 overflow-auto">
+          {results.map((n) => (
+            <button
+              key={n.id}
+              type="button"
+              onClick={() => createLink(n.id)}
+              disabled={linking}
+              className="
+                w-full
+                rounded-md
+                border
+                border-border
+                bg-card
+                px-3
+                py-2
+                text-left
+                text-sm
+                hover:bg-muted
+                disabled:opacity-50
+              "
+            >
+              {n.title}
+            </button>
+          ))}
         </div>
-      </DialogContent>
-    </Dialog>
-  );
+
+        <div className="flex justify-end">
+          <Button
+            variant="outline"
+            onClick={() => setOpen(false)}
+            disabled={linking}
+          >
+            Close
+          </Button>
+        </div>
+      </div>
+    </DialogContent>
+  </Dialog>
+);
+
 }
