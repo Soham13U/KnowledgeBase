@@ -1,4 +1,4 @@
-#Knowledge Base
+# Knowledge Base
 A full-stack knowledge management application inspired by Zettelkasten principles.
 Users can create notes, organize them with tags, link related ideas together, and track writing activity over time.
 
