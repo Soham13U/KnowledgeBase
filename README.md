@@ -4,110 +4,109 @@ Users can create notes, organize them with tags, link related ideas together, an
 
 Built with modern web technologies and deployed to production.
 
-##🚀 Features
+## 🚀 Features
 
--📝 Create, edit, and delete notes
+- 📝 Create, edit, and delete notes
 
--🏷 Create and assign multiple tags per note
+- 🏷 Create and assign multiple tags per note
 
--🔗 Link notes together with automatic backlinks
+- 🔗 Link notes together with automatic backlinks
 
--🔍 Search notes by title
+- 🔍 Search notes by title
 
--🎯 Filter notes by tag
+- 🎯 Filter notes by tag
 
--📊 Insights dashboard (7-day / 30-day activity stats)
+- 📊 Insights dashboard (7-day / 30-day activity stats)
 
--🌙 Custom light and dark theme system
+- 🌙 Custom light and dark theme system
 
--🔐 Lightweight per-user isolation using userKey
+- 🔐 Lightweight per-user isolation using userKey
 
-##🧱 Tech Stack
+## 🧱 Tech Stack
 
-###Frontend
+### Frontend
 
--Next.js (App Router)
+- Next.js (App Router)
 
--React
+- React
 
--Tailwind CSS
+- Tailwind CSS
 
--shadcn/ui
+- shadcn/ui
 
-###Backend
+### Backend
 
--Next.js Route Handlers
+- Next.js Route Handlers
 
--Prisma ORM
+- Prisma ORM
 
--PostgreSQL
+- PostgreSQL
 
-###Database
+### Database
 
--Docker (local development)
+- Docker (local development)
 
--Neon (production)
+- Neon (production)
 
-###Deployment
+### Deployment
 
--Vercel
+- Vercel
 
-##🧠 What This Project Demonstrates
+## 🧠 What This Project Demonstrates
 
 This project demonstrates:
 
--Designing relational database schemas (many-to-many & self-referencing relations)
+- Designing relational database schemas (many-to-many & self-referencing relations)
 
--Implementing join tables (NoteTag) and directed graph relations (NoteLink)
+- Implementing join tables (NoteTag) and directed graph relations (NoteLink)
 
--Transaction handling with Prisma
+- Transaction handling with Prisma
 
--Secure per-user data isolation without full auth complexity
+- Secure per-user data isolation without full auth complexity
 
--Building RESTful API routes in Next.js
+- Building RESTful API routes in Next.js
 
--Query filtering (search + tag filtering)
+- Query filtering (search + tag filtering)
 
--Managing client/server boundaries in App Router
+- Managing client/server boundaries in App Router
 
--Production deployment with environment configuration
+- Production deployment with environment configuration
 
--Using Docker for consistent local development
+- Using Docker for consistent local development
 
-##🗄 Data Modeling Highlights
+## 🗄 Data Modeling Highlights
 
--Many-to-many tagging system
+- Many-to-many tagging system
 
--Self-referencing note links (outgoing + backlinks)
+- Self-referencing note links (outgoing + backlinks)
 
--Composite primary keys for join tables
+- Composite primary keys for join tables
 
--Indexed queries for user-scoped filtering
+- Indexed queries for user-scoped filtering
 
-##📈 Insights System
+## 📈 Insights System
+- The insights dashboard calculates:
 
--The insights dashboard calculates:
+- Notes created in a time range
 
--Notes created in a time range
+- Notes updated in a time range
 
--Notes updated in a time range
+## 🔮 Future Improvements
 
-##🔮 Future Improvements
+- Real authentication (NextAuth)
 
--Real authentication (NextAuth)
+- Markdown support
 
--Markdown support
+- Graph visualization of note links
 
--Graph visualization of note links
+- Full tag management UI
 
--Full tag management UI
+- Collaborative/shared notes
 
--Collaborative/shared notes
+- Export / import functionality
 
--Export / import functionality
+- Mobile-first UI refinement
 
--Mobile-first UI refinement
-
--Most frequently used tags
+- Most frequently used tags
 
 Demonstrates aggregate queries and server-side computation.
